@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <title>{{Doc.title}}</title>
+</head>
+<style>
+table{
+    width: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: auto;
+	overflow-y: hidden;
+	font-size: 10px;
+	line-height: 20px;
+	color: #95D27E;
+	background-color: #3F3C3C;
+
+}
+pre{
+color:#95D27E
+}
+</style>
+<body>
+{% for endpoint in endpointlist %}
+<p>EndPoint Name: {{endpoint.name}}</p>
+<br>
+<p>URL: {{endpoint.url}}</p>
+<br>
+<p>EndPoint Verb: {{endpoint.verb}}</p>
+<br>
+<table>
+    <td><pre class="prettyprint" >{{endpoint.codeblock}}</pre></td>
+</table>
+<br>
+{% endfor %}
+
+</body>
+
+</html>
