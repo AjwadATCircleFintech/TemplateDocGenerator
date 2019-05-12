@@ -24,7 +24,7 @@ Template_JSON =[{
             "success_code": "JBLADF2003"
         }
 
-    } , {
+    }, {
 
     "API_Title": "Bank List",
     "URL_STRING": "/api/v2/beftn/route/bank/list/",
