@@ -15,14 +15,14 @@ def loadConfig():
         VariableName = json.load(config)
     config.close()
     return VariableName
-
+ 
 def UpdateConfig(dictionary):
 
     with open('config.json', 'w') as json_file:
         json.dump(dictionary, json_file)
     json_file.close()
 
-class BuildCredential:
+class BuildCredential(object):
 
     def __init__(self, ServiceName, Scopes):
         self.ServiceName = ServiceName
