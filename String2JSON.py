@@ -1,6 +1,60 @@
 import re
+import json
+from pprint import pprint
 
-BASIC_DOCSTRING = ""
+
+def RemoveNewLine(String):
+
+    return String.replace("\n","")
+
+def GenerateUniqueList(ParameterList):
+
+    return list(dict.fromkeys(ParameterList))
+
+def FindParameters(String):
+
+    #bracketpattern = re.compile("(:Title:(.*?):URL:)")
+    Pattern = re.compile(":\w+:")
+    stringz = Pattern.findall(String)
+
+    return stringz
+
+def FindPattern(String,Pattern):
+
+    pattern = re.compile(Pattern)
+
+    return pattern.findall(String)
+
+def FindParamValues(DocString):
+
+    Params = [":Title:",":URL:",":Method:",":Param_Request:",":Return:",":Return_Status:"]
+    DocString = RemoveNewLine(DocString)
+    ReturnDic = {}
+    for i in range(len(Params)):
+        if i + 1 < len(Params):
+            pattern = re.compile(Params[i] + "(.*?)" + Params[i + 1])
+            ReturnDic[Params[i]]= pattern.findall(DocString)
+        else:
+            pattern = re.compile(Params[i]+"(.*?)([)]\W|[)]$)")
+            ReturnDic[Params[i]] = pattern.findall(DocString)
+
+
+    return ReturnDic
+
+def GenerateJSON(ParsedDic):
+
+    JSON_Verbs = ['API_TITLE', 'URL_STRING', 'HTTP_VERB', 'REQUEST_PARAMS', 'RETURN_DATA', 'RETURN_STATUS']
+    Json_List = []
+    Doc_Json={}
+    for i in len(ParsedDic[":Title:"]):
+        Json_List.append()
+
+    return 0
+
+def Validate(String):
+
+    return 0
+
 API_DOCSTRING = """
 :Title: Dist List
 :URL: /api/v2/beftn/route/bank/dist-name/list/
@@ -24,13 +78,13 @@ BEFTN_KEY_ERROR_CODE = _("BEFTKE4001")
 
 
 """
-TEST_APISTRING = """
+TEST_DOCSTRING = """
 
 :Title: Dist List
 :URL: /api/v2/beftn/route/bank/dist-name/list/
 :Method: GET
-:param_request: { "bank_name": "Dist BANK LTD." }
-:return: {
+:Param_Request: { "bank_name": "Dist BANK LTD." }
+:Return: {
    "data": [
        {
            "dist_name": "GAZIPUR"
@@ -45,12 +99,15 @@ TEST_APISTRING = """
 :Return_Status:
 BEFTN_DIST_LIST_CODE = _("BEFTNDL2001")
 BEFTN_KEY_ERROR_CODE = _("BEFTKE4001")
+BEFTN_KEY_ERROR_CODE = _("BEFTKE1001")
+
+
 
 :Title: Another List
 :URL: /api/v2/beftn/route/bank/dist-name/Anotherlist/
 :Method: GET
-:param_request: { "bank_name": "Another BANK LTD." }
-:return: {
+:Param_Request: { "bank_name": "Another BANK LTD." }
+:Return: {
    "data": [
        {
            "dist_name": "Faridpur"
@@ -66,11 +123,14 @@ BEFTN_KEY_ERROR_CODE = _("BEFTKE4001")
 BEFTN_DIST_LIST_CODE = _("BEFTNDL3101")
 BEFTN_KEY_ERROR_CODE = _("BEFTKE5001")
 
+
+
+
 :Title: BEFTN LIST
 :URL: /api/v2/beftn/route/bank/dist-name/BEFTNlist/
 :Method: GET
-:param_request: { "bank_name": "BEFTN BANK LTD." }
-:return: {
+:Param_Request: { "bank_name": "BEFTN BANK LTD." }
+:Return: {
    "data": [
        {
            "dist_name": "GAZIPUR"
@@ -82,12 +142,17 @@ BEFTN_KEY_ERROR_CODE = _("BEFTKE5001")
 :Return_Status:
 BEFTN_DIST_LIST_CODE = _("BEFTNDL6001")
 BEFTN_KEY_ERROR_CODE = _("BEFTKE8001")
+BEFTN_KEY_ERROR_CODE = _("BEFTKJ9001")
+
+
+
+
 
 :Title: Cred List
 :URL: /api/v2/beftn/route/bank/dist-name/Credlist/
 :Method: GET
-:param_request: { "bank_name": "CRED BANK LTD." }
-:return: {
+:Param_Request: { "bank_name": "CRED BANK LTD." }
+:Return: {
    "data": [
        {
            "dist_name": "PURIPUR"
@@ -103,40 +168,36 @@ BEFTN_KEY_ERROR_CODE = _("BEFTKE8001")
 BEFTN_DIST_LIST_CODE = _("ABCTNDL3001")
 BEFTN_KEY_ERROR_CODE = _("TKEDNF1001")
 
+
+
+
 """
 
-TEST_APISTRING = TEST_APISTRING.replace("\n","")
 
-API_DOCSTRING = API_DOCSTRING.replace("\n","")
-bracketpattern = re.compile("(:Title:(.*?):URL:)")
-Pattern = re.compile(":\w+:")
-stringz = Pattern.findall(TEST_APISTRING)
-print(stringz)
-#TODO figure out the loop and we should more or less get every data of interest
-for i in range(len(stringz)):
-    if i+1<len(stringz):
-        pattern = re.compile(stringz[i]+"(.*?)"+stringz[i+1])
-        for elements in pattern.findall(TEST_APISTRING):
-            print(elements)
-    else:
-        pattern = re.compile(stringz[i]+"(.*?)[)]$")
-        for elements in pattern.findall(TEST_APISTRING):
-            print(elements)
-# for elements in stringz:
-#     subpattern = re.compile(elements+"(.*?)\n")
-#     Foundstring = subpattern.findall(API_DOCSTRING)
-#     print(Foundstring)
-    # Pattern = re.compile(elements)
-    # print(Pattern.findall(API_DOCSTRING))
-# API_DOCSTRING = API_DOCSTRING.replace('\n','')
-# Pattern = re.compile(":\w+:")
-# stringz = Pattern.findall(API_DOCSTRING)
-# split = re.split(":\w+:",API_DOCSTRING)
-# print(len(stringz))
-# print(len(split))
-# print(split)
+ValueList = FindParamValues(TEST_DOCSTRING)
+pprint(ValueList)
 
 
 
-# keydictionary=dict(zip(Pattern.findall(API_DOCSTRING), re.split("(:\w+:)",API_DOCSTRING)))
-# print(keydictionary)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Initial_Json = dict(zip(stringz,FindParamValues(stringz,TEST_DOCSTRING)))
+# pprint(Initial_Json)
+# DOCSTRING = RemoveNewLine(API_DOCSTRING)
+# TEST_DOCSTRING = TEST_DOCSTRING.replace('\n','')
+# Pattern1 = re.compile(":\w+:")
+# Pattern2 = re.compile(":Return_Status:(.*?)[)]\W")
+#
+# stringz = Pattern1.findall(TEST_DOCSTRING)
