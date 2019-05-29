@@ -39,3 +39,7 @@ class GoogleDriveService(ServiceParent.ServiceParent):
             for item in items:
                 print(u'{0} ({1})'.format(item['name'], item['id']))
 
+    def GenerateDocument(self,template,JsonList):
+
+        return 0
+

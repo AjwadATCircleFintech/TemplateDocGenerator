@@ -2,65 +2,17 @@ import re
 import json
 from pprint import pprint
 
+#TODO: We shall be fixing majority of the functions in this
 
-def RemoveNewLine(String):
-
-    return String.replace("\n","")
-
-def GenerateUniqueList(ParameterList):
-
-    return list(dict.fromkeys(ParameterList))
-
-def FindParameters(String):
-
-    #bracketpattern = re.compile("(:Title:(.*?):URL:)")
-    Pattern = re.compile(":\w+:")
-    stringz = Pattern.findall(String)
-
-    return stringz
-
-def FindPattern(String,Pattern):
-
-    pattern = re.compile(Pattern)
-
-    return pattern.findall(String)
-
-def FindParamValues(DocString):
-
-    Params = [":Title:",":URL:",":Method:",":Param_Request:",":Return:",":Return_Status:"]
-    DocString = RemoveNewLine(DocString)
-    ReturnDic = {}
-    for i in range(len(Params)):
-        if i + 1 < len(Params):
-            pattern = re.compile(Params[i] + "(.*?)" + Params[i + 1])
-            ReturnDic[Params[i]]= pattern.findall(DocString)
-        else:
-            pattern = re.compile(Params[i]+"(.*?)([)]\W|[)]$)")
-            ReturnDic[Params[i]] = pattern.findall(DocString)
-
-
-    return ReturnDic
-
-def GenerateJSON(ParsedDic):
-
-    JSON_Verbs = ['API_TITLE', 'URL_STRING', 'HTTP_VERB', 'REQUEST_PARAMS', 'RETURN_DATA', 'RETURN_STATUS']
-    Json_List = []
-    Doc_Json={}
-    for i in len(ParsedDic[":Title:"]):
-        Json_List.append()
-
-    return 0
-
-def Validate(String):
-
-    return 0
+RegexParams = [":Title:",":URL:",":Method:",":Param_Request:",":Return:",":Return_Status:"]
+JSON_VERBS = ['API_TITLE', 'URL_STRING', 'HTTP_VERB', 'REQUEST_PARAMS', 'RETURN_DATA', 'RETURN_STATUS']
 
 API_DOCSTRING = """
 :Title: Dist List
 :URL: /api/v2/beftn/route/bank/dist-name/list/
 :Method: GET
-:param_request: { "bank_name": "AGRANI BANK LTD." }
-:return: {
+:Param_request: { "bank_name": "AGRANI BANK LTD." }
+:Return: {
    "data": [
        {
            "dist_name": "GAZIPUR"
@@ -173,9 +125,69 @@ BEFTN_KEY_ERROR_CODE = _("TKEDNF1001")
 
 """
 
+def RemoveNewLine(String):
 
-ValueList = FindParamValues(TEST_DOCSTRING)
-pprint(ValueList)
+    return String.replace("\n","")
+
+def GenerateUniqueList(ParameterList):
+
+    return list(dict.fromkeys(ParameterList))
+
+def FindParameters(String):
+
+    #bracketpattern = re.compile("(:Title:(.*?):URL:)")
+    Pattern = re.compile(":\w+:")
+    stringz = Pattern.findall(String)
+
+    return stringz
+
+def FindPattern(String,Pattern):
+
+    pattern = re.compile(Pattern)
+
+    return pattern.findall(String)
+
+def FindParamValues(DocString):
+
+    Params = [":Title:",":URL:",":Method:",":Param_Request:",":Return:",":Return_Status:"]
+    DocString = RemoveNewLine(DocString)
+    ReturnDic = {}
+    for i in range(len(Params)):
+        if i + 1 < len(Params):
+            pattern = re.compile(Params[i] + "(.*?)" + Params[i + 1])
+            ReturnDic[Params[i]]= pattern.findall(DocString)
+        else:
+            pattern = re.compile(Params[i]+"(.*?)([)]\W|[)]$)")
+            ReturnDic[Params[i]] = pattern.findall(DocString)
+
+
+    return zip(ReturnDic[":Title:"],ReturnDic[":URL:"],ReturnDic[":Method:"],ReturnDic[":Param_Request:"],\
+               ReturnDic[":Return:"],ReturnDic[":Return_Status:"])
+
+def GenerateJSON(ParsedDic):
+
+    JsonList = []
+
+    for item in ParsedDic:
+        Jsondic ={}
+        for i in range(len(JSON_VERBS)):
+            Jsondic[JSON_VERBS[i]] = item[i]
+        JsonList.append(json.dumps(Jsondic))
+
+    return JsonList
+
+def Validate(String):
+
+    return 0
+
+
+
+
+pattern = re.compile(":\w+:")
+print(pattern.findall(TEST_DOCSTRING))
+# for elements in GenerateJSON(ValueList):
+#  print(elements)
+#  print("\n")
 
 
 
@@ -191,13 +203,3 @@ pprint(ValueList)
 
 
 
-
-
-# Initial_Json = dict(zip(stringz,FindParamValues(stringz,TEST_DOCSTRING)))
-# pprint(Initial_Json)
-# DOCSTRING = RemoveNewLine(API_DOCSTRING)
-# TEST_DOCSTRING = TEST_DOCSTRING.replace('\n','')
-# Pattern1 = re.compile(":\w+:")
-# Pattern2 = re.compile(":Return_Status:(.*?)[)]\W")
-#
-# stringz = Pattern1.findall(TEST_DOCSTRING)
